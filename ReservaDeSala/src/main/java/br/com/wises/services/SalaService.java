@@ -98,4 +98,16 @@ public class SalaService {
         }else
             return "Token inválido";
     }
+
+    @POST
+    @Path("remover")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public String removerSala(@HeaderParam("id") int id, @HeaderParam("authorization") String authorization){
+        if (authorization.equals("secret")) {
+            EManager.getInstance().getDbAccessor().removeSala(id);
+            return "200. Sala removida com sucesso\n\n";
+        } else {
+            return "403. Token inválido";
+        }
+    }
 }
