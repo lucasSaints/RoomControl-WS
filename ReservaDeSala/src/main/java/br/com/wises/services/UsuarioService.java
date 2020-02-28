@@ -85,9 +85,9 @@ public class UsuarioService {
             Usuario user = EManager.getInstance().getDbAccessor().getCredencials(email, password);
             if (user != null) {
                 if(user.isAtivo())
-                    return "Usuário bloqueado";
-                else
                     return "Login efetuado com sucesso!";
+                else
+                    return "Usuário bloqueado";
             } else {
                 return "Credenciais Inválidas!";
             }
