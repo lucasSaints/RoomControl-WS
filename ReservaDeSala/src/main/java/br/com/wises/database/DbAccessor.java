@@ -116,6 +116,16 @@ public class DbAccessor {
             this.manager.getTransaction().commit();
         }
     }
+    
+    public void removeSala(int idSala){
+        synchronized (this.operationLock) {
+            this.manager.getTransaction().begin();
+            Sala a = (Sala) this.manager.createNamedQuery("Sala.findById").setParameter("id", idSala).getSingleResult();
+            a.setAtivo(!a.getAtivo());
+            this.manager.merge(a);
+            this.manager.getTransaction().commit();
+        }
+    }
 
     public List<Reserva> getReservasByIdSala(int idSala) {
         try {
