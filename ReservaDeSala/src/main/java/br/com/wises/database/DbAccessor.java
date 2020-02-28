@@ -111,7 +111,7 @@ public class DbAccessor {
         synchronized (this.operationLock) {
             this.manager.getTransaction().begin();
             Usuario a = (Usuario) this.manager.createNamedQuery("Usuario.findById").setParameter("id", idUser).getSingleResult();
-            a.setAtivo(false);
+            a.setAtivo(!a.isAtivo());
             this.manager.merge(a);
             this.manager.getTransaction().commit();
         }
