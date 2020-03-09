@@ -52,6 +52,9 @@ public class Reserva implements Serializable {
     @Size(max = 45)
     @Column(name = "descricao")
     private String descricao;
+    @Size(max = 13)
+    @Column(name = "repeticoes")
+    private String repeticoes;
     @Column(name = "dataCriacao")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataCriacao;
@@ -66,6 +69,14 @@ public class Reserva implements Serializable {
 
     public Reserva(Integer id) {
         this.id = id;
+    }
+
+    public String getRepeticoes() {
+        return repeticoes;
+    }
+
+    public void setRepeticoes(String repeticoes) {
+        this.repeticoes = repeticoes;
     }
 
     public Integer getId() {
