@@ -74,12 +74,15 @@ public class ReservaService {
             System.out.println("Reserva Encoded: " + novaReservaEncoded);
             System.out.println("Reserva Decoded: " + reservaDecoded);
             int idSala = 0, idUsuario = 0;
-            String descricao = "";
+            String descricao = "", repeticoes = "";
             Date dataHoraInicio = null, dataHoraFim = null;
-            if (userObj.has("id_sala") && userObj.has("id_usuario") && userObj.has("descricao") && userObj.has("data_hora_inicio") && userObj.has("data_hora_fim") && userObj.has("ativo")) {
+            if (userObj.has("id_sala") && userObj.has("id_usuario") && userObj.has("descricao") && userObj.has("data_hora_fim") && userObj.has("ativo")) {
                 idSala = userObj.getInt("id_sala");
                 boolean deu=true;
-                dataHoraInicio = new Date(userObj.getLong("data_hora_inicio"));
+                if(userObj.has("data_hora_inicio"))
+                    dataHoraInicio = new Date(userObj.getLong("data_hora_inicio"));
+                else
+                    repeticoes = new String(userObj.getString("repeticoes"));
                 dataHoraFim = new Date(userObj.getLong("data_hora_fim"));
                 for(int i=0;i<EManager.getInstance().getDbAccessor().getReservasByIdSala(idSala).size();i++){
                     if(EManager.getInstance().getDbAccessor().getReservasByIdSala(idSala).get(i).getDataHoraInicio().compareTo(dataHoraInicio)<0 && EManager.getInstance().getDbAccessor().getReservasByIdSala(idSala).get(i).getDataHoraFim().compareTo(dataHoraInicio)>0)
