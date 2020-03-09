@@ -205,6 +205,7 @@ public class UsuarioService {
                 novoUsuario.setEmail(email);
                 novoUsuario.setNome(nome);
                 novoUsuario.setSenha(senha);
+                novoUsuario.setAtivo(true);
                 novoUsuario.setIdOrganizacao(organizacao);
 
                 EManager.getInstance().getDbAccessor().novoUsuario(novoUsuario);
