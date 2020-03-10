@@ -76,19 +76,37 @@ public class ReservaService {
             int idSala = 0, idUsuario = 0;
             String descricao = "", repeticoes = "";
             Date dataHoraInicio = null, dataHoraFim = null;
-            if (userObj.has("id_sala") && userObj.has("id_usuario") && userObj.has("descricao") && userObj.has("data_hora_fim") && userObj.has("ativo")) {
+            if (userObj.has("id_sala") && userObj.has("id_usuario") && userObj.has("descricao") && userObj.has("data_hora_inicio") && userObj.has("data_hora_fim") && userObj.has("ativo")) {
                 idSala = userObj.getInt("id_sala");
                 boolean deu=true;
-                if(userObj.has("data_hora_inicio"))
-                    dataHoraInicio = new Date(userObj.getLong("data_hora_inicio"));
-                else
+                dataHoraInicio = new Date(userObj.getLong("data_hora_inicio"));
+                if(userObj.has("repeticoes"))
                     repeticoes = new String(userObj.getString("repeticoes"));
                 dataHoraFim = new Date(userObj.getLong("data_hora_fim"));
                 for(int i=0;i<EManager.getInstance().getDbAccessor().getReservasByIdSala(idSala).size();i++){
-                    if(EManager.getInstance().getDbAccessor().getReservasByIdSala(idSala).get(i).getDataHoraInicio().compareTo(dataHoraInicio)<0 && EManager.getInstance().getDbAccessor().getReservasByIdSala(idSala).get(i).getDataHoraFim().compareTo(dataHoraInicio)>0)
-                        deu=false;
-                    if(EManager.getInstance().getDbAccessor().getReservasByIdSala(idSala).get(i).getDataHoraInicio().compareTo(dataHoraFim)<0 && EManager.getInstance().getDbAccessor().getReservasByIdSala(idSala).get(i).getDataHoraFim().compareTo(dataHoraFim)>0)
-                        deu=false;
+                    Reserva res = EManager.getInstance().getDbAccessor().getReservasByIdSala(idSala).get(i);
+                    if(res.getRepeticoes().isEmpty()){
+                        if(res.getDataHoraInicio().compareTo(dataHoraInicio)<0 && res.getDataHoraFim().compareTo(dataHoraInicio)>0)
+                            deu=false;
+                        if(res.getDataHoraInicio().compareTo(dataHoraFim)<0 && res.getDataHoraFim().compareTo(dataHoraFim)>0)
+                            deu=false;
+                    }else{  
+                        Calendar j = Calendar.getInstance();
+                        j.setTime(dataHoraInicio);
+                        while(j.getTime().compareTo(res.getDataHoraFim())<0){
+                            if(res.getRepeticoes().charAt((j.get(j.DAY_OF_WEEK)*2)-2)=='1'){
+                                Date tentativaInicio = new Date(2000,1,1,j.get(Calendar.HOUR_OF_DAY),j.get(Calendar.MINUTE));
+                                Date tentativaFim = new Date(2000,1,1,dataHoraFim.getHours(),dataHoraFim.getMinutes());
+                                Date repeticaoInicio = new Date(2000,1,1,res.getDataHoraInicio().getHours(),res.getDataHoraInicio().getMinutes());
+                                Date repeticaoFim = new Date(2000,1,1,res.getDataHoraFim().getHours(),res.getDataHoraFim().getMinutes());
+                                if(repeticaoInicio.compareTo(tentativaInicio)<0 && repeticaoFim.compareTo(tentativaInicio)>0)
+                                    deu=false;
+                                if(repeticaoInicio.compareTo(tentativaFim)<0 && repeticaoFim.compareTo(tentativaFim)>0)
+                                    deu=false;
+                            }
+                            j.add(j.DAY_OF_MONTH, 1);
+                        }
+                    }
                     System.out.println("deu: "+deu);
                 }
                 if(deu){
@@ -100,6 +118,7 @@ public class ReservaService {
                     novaReserva.setDescricao(descricao);
                     novaReserva.setDataHoraInicio(dataHoraInicio);
                     novaReserva.setDataHoraFim(dataHoraFim);
+                    novaReserva.setRepeticoes(userObj.getString("repeticoes"));
                     novaReserva.setAtivo(true);
 
                     Date date = new Date();
