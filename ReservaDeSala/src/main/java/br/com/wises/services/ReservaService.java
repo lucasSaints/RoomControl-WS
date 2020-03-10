@@ -112,13 +112,15 @@ public class ReservaService {
                 if(deu){
                     idUsuario = userObj.getInt("id_usuario");
                     descricao = userObj.getString("descricao");
-
+                    String repetecos="0,0,0,0,0,0,0";
                     novaReserva.setIdSala(idSala);
                     novaReserva.setIdUsuario(idUsuario);
                     novaReserva.setDescricao(descricao);
                     novaReserva.setDataHoraInicio(dataHoraInicio);
                     novaReserva.setDataHoraFim(dataHoraFim);
-                    novaReserva.setRepeticoes(userObj.getString("repeticoes"));
+                    if(userObj.has("repeticoes"))
+                        repetecos=userObj.getString("repeticoes");
+                    novaReserva.setRepeticoes(repetecos);
                     novaReserva.setAtivo(true);
 
                     Date date = new Date();
