@@ -2,10 +2,12 @@ package br.com.wises.services;
 
 import br.com.wises.database.EManager;
 import br.com.wises.database.pojo.Reserva;
+import br.com.wises.database.pojo.Sala;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,6 +46,26 @@ public class ReservaService {
         if (authorization != null && authorization.equals("secret")) {
             List<Reserva> lista = EManager.getInstance().getDbAccessor().getReservasByIdUsuario(idUsuario);
             return lista;
+        } else {
+            return null;
+        }
+    }
+    
+    @GET
+    @Path("byEmpresa")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<Reserva> getReservasAtivasByEmpresa(@HeaderParam("id_org") int idEmp, @HeaderParam("authorization") String authorization){
+        if (authorization != null && authorization.equals("secret")) {
+            List<Sala> salasNaEmpresa = EManager.getInstance().getDbAccessor().getSalasByOrganizacaoId(idEmp);
+            List<Reserva> reservasNaEmpresa = new ArrayList<>();
+            for(int i=0;i<salasNaEmpresa.size();i++){
+                List<Reserva> reservasNaSala = EManager.getInstance().getDbAccessor().getReservasByIdSala(salasNaEmpresa.get(i).getId());
+                for(int j=0;j<reservasNaSala.size();j++){
+                    if(reservasNaSala.get(j).getAtivo())
+                        reservasNaEmpresa.add(reservasNaSala.get(j));
+                }
+            }
+            return reservasNaEmpresa; //
         } else {
             return null;
         }

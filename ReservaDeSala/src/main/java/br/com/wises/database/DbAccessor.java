@@ -117,6 +117,16 @@ public class DbAccessor {
         }
     }
     
+    public void promoteUser(int idUser){
+        synchronized (this.operationLock) {
+            this.manager.getTransaction().begin();
+            Usuario a = (Usuario) this.manager.createNamedQuery("Usuario.findById").setParameter("id", idUser).getSingleResult();
+            a.setAdmin(!a.isAdmin());
+            this.manager.merge(a);
+            this.manager.getTransaction().commit();
+        }
+    }
+    
     public void removeSala(int idSala){
         synchronized (this.operationLock) {
             this.manager.getTransaction().begin();

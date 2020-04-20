@@ -47,6 +47,8 @@ public class Usuario implements Serializable {
     private String senha;
     @Column(name = "ativo")
     private boolean ativo;
+    @Column(name = "admin")
+    private boolean admin;
     @JoinColumn(name = "id_organizacao", referencedColumnName = "id")
     @ManyToOne
     private Organizacao idOrganizacao;
@@ -64,6 +66,14 @@ public class Usuario implements Serializable {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
     
     public Integer getId() {
